@@ -59,9 +59,13 @@ namespace CoolNash
         private static String getEquitiesString(int p1, int p2)
         {
             // p1 <= p2
+<<<<<<< HEAD
             // WARNING: error prone. 
             // LineLength depends on whether line ending is \n or \r\n (34 and 35 respectively)
             const int LineLength = 34; // or 35
+=======
+            const int LineLength = 35;
+>>>>>>> 0b54326dc8ee01bbd25685966834fe4c17d196bb
             int stringIndex = StringIndexTwoPlayers(p1, p2);
             int ind1 = (stringIndex - 1) * LineLength;
             int ind2 = stringIndex * LineLength - 1;
