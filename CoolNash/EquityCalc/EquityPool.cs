@@ -60,6 +60,7 @@ namespace CoolNash
         {
             // p1 <= p2
             // WARNING: error prone. 
+            // TODO: rewrite this properly
             // LineLength depends on whether line ending is \n or \r\n (34 and 35 respectively)
             const int LineLength = 34; // or 35
             int stringIndex = StringIndexTwoPlayers(p1, p2);

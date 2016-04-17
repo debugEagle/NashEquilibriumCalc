@@ -47,31 +47,34 @@ namespace CoolNash
             if (pos == 0) EVFold -= blinds[0]; // sb
             else EVFold -= blinds[1]; // bb
 
-            for (int i = 0; i < 169; i++)
-            {
-                if (pos == 0) // sb
-                {
-                    double oppCalls = HandCombos.RangeProbabilityKnowingHand(i, oppRange);
-                    TwoPlayerEquity pushEquity = Equities.HandVsRange(HandPool.getHand(i), oppRange);
-                    double EVPush = (1 - oppCalls) * (stacks[0] + Math.Min(stacks[1], blinds[1]))
-                        + oppCalls * (pushEquity.win1 * (stacks[0] + effStack) + pushEquity.draw * (stacks[0]) + pushEquity.win2 * (stacks[0] - effStack));
-                    if (isAnte) EVPush += (1 - oppCalls) * blinds[2];
+            Parallel.For(0, 169, i => { Iteration(oppRange, stacks, blinds, pos, EVFold, i, out res.probability[i]); });
 
-                    if (EVPush > EVFold)
-                        res.probability[i] = 1.0f;
-                    //else res.probability[i] = 0.0;
-                }
-                else // bb
-                {
-                    TwoPlayerEquity callEquity = Equities.HandVsRange(HandPool.getHand(i), oppRange);
-                    double EVCall = callEquity.win1 * (stacks[0] + effStack) + callEquity.draw * (stacks[0]);
-
-                    if (EVCall > EVFold)
-                        res.probability[i] = 1.0f;
-                    //else res.probability[i] = 0.0;
-                }
-            }
             return res;
+        }
+
+        private static void Iteration(Range oppRange, List<int> stacks, List<int> blinds, int pos, double EVFold, int handNum, out float res)
+        {
+            if (pos == 0) // sb
+            {
+                double oppCalls = HandCombos.RangeProbabilityKnowingHand(handNum, oppRange);
+                TwoPlayerEquity pushEquity = Equities.HandVsRange(HandPool.getHand(handNum), oppRange);
+                double EVPush = (1 - oppCalls) * (stacks[0] + Math.Min(stacks[1], blinds[1]))
+                    + oppCalls * (pushEquity.win1 * (stacks[0] + effStack) + pushEquity.draw * (stacks[0]) + pushEquity.win2 * (stacks[0] - effStack));
+                if (isAnte) EVPush += (1 - oppCalls) * blinds[2];
+
+                if (EVPush > EVFold)
+                    res = 1.0f;
+                else res = 0.0f;
+            }
+            else // bb
+            {
+                TwoPlayerEquity callEquity = Equities.HandVsRange(HandPool.getHand(handNum), oppRange);
+                double EVCall = callEquity.win1 * (stacks[0] + effStack) + callEquity.draw * (stacks[0]);
+
+                if (EVCall > EVFold)
+                    res = 1.0f;
+                else res = 0.0f;
+            }
         }
     }
 }
